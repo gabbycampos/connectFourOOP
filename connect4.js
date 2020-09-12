@@ -5,6 +5,13 @@
  * board fills (tie)
  */
 
+/*
+ AC: Using the 'gameOver' global variable is not the best solution. Maybe the
+ use of the "removeListener" function would be more appropriate. However,
+ this function probably would require a little more advanced features.
+ */
+let gameOver = false;
+
 class Game {
   constructor(HEIGHT, WIDTH, currPlayer1, currPlayer2) {
     this.HEIGHT = HEIGHT;
@@ -77,15 +84,36 @@ class Game {
 
   /** endGame: announce game end */
   endGame(msg) {
+    /*
+      AC: the 'setTimeout' function could be removed if its not clear why it is implemented here.
+     */
     setTimeout(function() {
       alert(msg);
-      const top = document.querySelector("#column-top");
-      top.addEventListener('click', this.handleClick.bind(this));
+      /*
+        AC: the next two lines should be removed. Actually, they are adding another listener
+        when the best thing to do probably would be removing the current one.
+       */
+      // const top = document.querySelector("#column-top");
+      // top.addEventListener('click', this.handleClick.bind(this));
+      /*
+        AC: the variable 'gameOver' will be used by the listener to determine if it will continue
+        to process the clicks (gameOver === false) or just ignore the clicks (gameOver === true ).
+       */
+      gameOver = true;
     }, 500)
   }
 
   /** handleClick: handle click of column top to play piece */
   handleClick(evt) {
+
+    /*
+     If the game is over ('gameOver' is 'true') then simply return (line 110)
+     without running the code (find spot, place in table, etc.)
+     */
+    if ( gameOver ){
+      return;
+    }
+
     // get x from ID of clicked cell
     const x = +evt.target.id;
 
@@ -110,10 +138,10 @@ class Game {
     if (this.board.every(row => row.every(cell => cell))) {
       return this.endGame('Tie!');
     }
-  
+
     // Switch Players
     this.currPlayer = this.currPlayer === this.currPlayers[0] ? this.currPlayers[1] : this.currPlayers[0];
-    
+
 }
     /** checkForWin: check board cell-by-cell for "does a win start here?" */
 checkForWin() {
@@ -137,7 +165,7 @@ checkForWin() {
           const diagDR = [[y, x], [y + 1, x + 1], [y + 2, x + 2], [y + 3, x + 3]];
           const diagDL = [[y, x], [y + 1, x - 1], [y + 2, x - 2], [y + 3, x - 3]];
 
-          // checking for each possible win for a winner. 
+          // checking for each possible win for a winner.
           if (_win(horiz) || _win(vert) || _win(diagDR) || _win(diagDL)) {
             return true;
           }
