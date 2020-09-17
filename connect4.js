@@ -5,7 +5,6 @@
  * board fills (tie)
  */
 
-let gameOver = false;
 
 class Game {
   constructor(HEIGHT, WIDTH, currPlayer1, currPlayer2) {
@@ -15,6 +14,7 @@ class Game {
     this.currPlayer = currPlayer1;
     this.makeBoard();
     this.makeHtmlBoard();
+    this.gameOver = false;
   }
 
   makeBoard() {
@@ -79,15 +79,15 @@ class Game {
 
   /** endGame: announce game end */
   endGame(msg) {
-    setTimeout(function() {
+    setTimeout(() => {
       alert(msg);
-      gameOver = true;
     }, 500)
+    this.gameOver = true;
   }
 
   /** handleClick: handle click of column top to play piece */
   handleClick(evt) {
-    if (gameOver) {
+    if (this.gameOver) {
       return;
     }
     // get x from ID of clicked cell
