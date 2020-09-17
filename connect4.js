@@ -5,6 +5,8 @@
  * board fills (tie)
  */
 
+let gameOver = false;
+
 class Game {
   constructor(HEIGHT, WIDTH, currPlayer1, currPlayer2) {
     this.HEIGHT = HEIGHT;
@@ -79,13 +81,15 @@ class Game {
   endGame(msg) {
     setTimeout(function() {
       alert(msg);
-      const top = document.querySelector("#column-top");
-      top.addEventListener('click', this.handleClick.bind(this));
+      gameOver = true;
     }, 500)
   }
 
   /** handleClick: handle click of column top to play piece */
   handleClick(evt) {
+    if (gameOver) {
+      return;
+    }
     // get x from ID of clicked cell
     const x = +evt.target.id;
 
